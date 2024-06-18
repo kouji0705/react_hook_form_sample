@@ -4,36 +4,41 @@ import axios from 'axios';
 import queryString from 'query-string';
 import { Box, CircularProgress, List, ListItem, ListItemText } from '@mui/material';
 
-export const SearchResult: React.FC = () => {
-  const location = useLocation();
-  const [results, setResults] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+type SearchResultProps = {
+    results: any[];
+    loading: boolean;
+};
 
-  useEffect(() => {
-    const fetchData = async (query: string) => {
-      setLoading(true);
-      try {
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-          params: { q: query }
-        });
-        setResults(response.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setResults([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+export const SearchResult = ({ results,loading}:SearchResultProps) => {
+//   const location = useLocation();
+//   const [results, setResults] = useState<any[]>([]);
+//   const [loading, setLoading] = useState<boolean>(false);
 
-    const params = queryString.parse(location.search);
-    const queryParam = params.query as string;
+//   useEffect(() => {
+//     const fetchData = async (query: string) => {
+//       setLoading(true);
+//       try {
+//         const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+//           params: { q: query }
+//         });
+//         setResults(response.data);
+//       } catch (error) {
+//         console.error('Error fetching data:', error);
+//         setResults([]);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
 
-    if (queryParam) {
-      fetchData(queryParam);
-    } else {
-      setResults([]);
-    }
-  }, [location.search]);
+//     const params = queryString.parse(location.search);
+//     const queryParam = params.query as string;
+
+//     if (queryParam) {
+//       fetchData(queryParam);
+//     } else {
+//       setResults([]);
+//     }
+//   }, [location.search]);
 
   return (
     <Box mt={4}>
