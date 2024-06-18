@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Container, Typography } from '@mui/material';
 import SearchForm from './components/SearchForm';
+import { JsonPlaceHolder } from './components'
 
 const App: React.FC = () => {
   return (
@@ -11,7 +12,7 @@ const App: React.FC = () => {
           Search Example with React Hook Form
         </Typography>
         <Routes>
-          <Route path="/" element={<SearchForm />} />
+          <Route path="/" element={<JsonPlaceHolder />} />
         </Routes>
       </Container>
     </Router>
