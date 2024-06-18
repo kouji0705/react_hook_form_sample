@@ -1,33 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
-import { TextField, Button, Box, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
+import { TextField, Button, Box, List, ListItem, ListItemText } from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
+import queryString from 'query-string';
 
 type SearchFormData = {
   query: string;
 };
 
 const SearchForm: React.FC = () => {
-  const { register, handleSubmit } = useForm<SearchFormData>();
+  const { register, handleSubmit, setValue } = useForm<SearchFormData>();
   const [results, setResults] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const onSubmit = async (data: SearchFormData) => {
-    setSearchTerm(data.query);
-    setLoading(true);
-    try {
-      const response = await axios.get(`https://jsonplaceholder.typicode.com/posts`, {
-        params: { q: data.query }
-      });
-      const titles = response.data.map((post: any) => post.title);
-      setResults(titles);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setResults([]);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    const params = queryString.parse(location.search);
+    const queryParam = params.query as string;
+    if (queryParam) {
+      setValue('query', queryParam);
+      setResults([`Result for ${queryParam} 1`, `Result for ${queryParam} 2`, `Result for ${queryParam} 3`]);
     }
+  }, [location.search, setValue]);
+
+  const onSubmit = (data: SearchFormData) => {
+    const newQuery = queryString.stringify({ query: data.query });
+    navigate(`?${newQuery}`);
   };
 
   return (
@@ -45,22 +43,16 @@ const SearchForm: React.FC = () => {
         </Button>
       </form>
 
-      {loading ? (
-        <Box display="flex" justifyContent="center" mt={2}>
-          <CircularProgress />
+      {results.length > 0 && (
+        <Box mt={4}>
+          <List>
+            {results.map((result, index) => (
+              <ListItem key={index} button>
+                <ListItemText primary={result} />
+              </ListItem>
+            ))}
+          </List>
         </Box>
-      ) : (
-        results.length > 0 && (
-          <Box mt={4}>
-            <List>
-              {results.map((result, index) => (
-                <ListItem key={index} button onClick={() => setSearchTerm(result)}>
-                  <ListItemText primary={result} />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        )
       )}
     </Box>
   );
